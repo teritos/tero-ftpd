@@ -53,8 +53,8 @@ class DjangoChannelsFTPHandler(FTPHandler):
         """Send a notification."""
         image = ImageHandler(filepath=filepath, username=self.username)
 
-        if image.is_similar():
-            return
+        #if image.is_similar():
+        #    return
 
         with open(filepath, 'rb') as image:
             encoded_image = base64.b64encode(image.read())
