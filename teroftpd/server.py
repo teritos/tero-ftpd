@@ -6,6 +6,7 @@ import logging
 from pyftpdlib.servers import ThreadedFTPServer
 from teroftpd.handlers import DjangoChannelsFTPHandler
 from teroftpd.authorizer import FTPDjangoUserAuthorizer
+from teroftpd._version import BANNER
 
 
 logger = logging.getLogger("ftpd")  # pylint: disable=C0103
@@ -37,6 +38,7 @@ class TeroFTPServer(object):
     def run(self):
         """Start FTP server"""
         address, port = self.ftp_server.address
+        logger.info(BANNER)
         logger.info("Starting FTP server on: %s:%s", address, port)
         try:
             self.ftp_server.serve_forever()
