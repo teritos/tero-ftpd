@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+
+"""Script to run the 'teroftpd' utility."""
+
+import os
+import sys
+import pathlib
+from teroftpd.server import TeroFTPServer
+
+
+parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(sys.argv[0])))
+if os.path.basename(parent_dir) == 'teroftpd':
+    # inside the project!!
+    sys.path.insert(0, parent_dir)
+confdir = str(pathlib.Path.home() / pathlib.Path('.config/tero'))
+
+
+host = os.getenv('TERO_FTP_HOST', '0.0.0.0')
+port = os.getenv('TERO_FTP_PORT', 2121)
+rootdir = os.getenv('TERO_FTP_ROOTDIR', confdir)
+ftp_server = TeroFTPServer(host, port, rootdir)
+ftp_server.run()
