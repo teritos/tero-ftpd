@@ -1,15 +1,16 @@
+"""Handle ftpd images."""
 import os
-import logging
 import redis
+import logging  # pylint: disable=C0411
 
-from teroftpd.settings import REDIS_HOST
+from teroftpd import settings
 from libtero.images import ImageHash
 
 
-logger = logging.getLogger("ftpd")
+logger = logging.getLogger("ftpd")  # pylint: disable=C0103
 
 # pylint: disable=invalid-name
-r = redis.StrictRedis(host=REDIS_HOST, port=6379)
+r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
 
 MOTION_TTL = os.getenv('MOTION_TTL', 60) # seconds
 SIMILARITY_THRESHOLD = os.getenv('SIMILARITY_THRESHOLD', 0.8)
@@ -23,6 +24,7 @@ class ImageHandler(object):
         self.username = username
 
     def is_similar(self):
+        """Return bool if images are similar."""
         image_hash = ImageHash(filepath=self.filepath)
         key = 'motion.{}'.format(self.username)
 
@@ -39,8 +41,7 @@ class ImageHandler(object):
             r.set(key, str(image_hash), ttl)
 
             score = image_hash.compare(last_hash)
-
-            logger.info("{} / SIMILARITY_THRESHOLD: {}".format(score, SIMILARITY_THRESHOLD))
+            logger.info("%s / SIMILARITY_THRESHOLD: %s", score, SIMILARITY_THRESHOLD)
 
             if score > SIMILARITY_THRESHOLD:
                 return True
