@@ -1,0 +1,32 @@
+
+[circus]
+statsd = 1
+httpd = 0
+
+[watcher:teroftpd]
+cmd = ./bin/teroftpd 
+numprocesses = 1
+use_sockets = False 
+virtualenv =
+copy_env = True
+working_dir =
+
+[env:teroftpd]
+PYTHON =
+PYTHONPATH =
+DJANGO_SETTINGS_MODULE = teroftpd.settings
+TERO_FTP_HOST = 0.0.0.0
+TERO_FTP_PORT = 2121
+TERO_FTP_FILES_DIR =
+TERO_PGSQL_NAME =
+TERO_PGSQL_USER =
+TERO_PGSQL_PASSWORD =
+TERO_PGSQL_HOST =
+TERO_PGSQL_PORT =
+TERO_REDIS_HOST =
+TERO_REDIS_PORT = 6379
+DJANGO_STATIC_ROOT =
+DJANGO_MEDIA_ROOT =
+DJANGO_SECRET =
+PASSIVE_PORTS_MIN = 30000
+PASSIVE_PORTS_MAX = 31000
