@@ -20,11 +20,13 @@ DATABASES = {
         'PASSWORD': os.getenv('TERO_PGSQL_PASSWORD'),
     }
 }
+REDIS_HOST = os.getenv('TERO_REDIS_HOST')
+REDIS_PORT = int(os.getenv('TERO_REDIS_PORT'))
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "asgi_redis.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [(os.getenv('TERO_REDIS_HOST'), os.getenv('TERO_REDIS_PORT'))],
+            "hosts": [(REDIS_HOST, REDIS_PORT)],
         },
         "ROUTING": "teroftpd.routing.channel_routing",
     },
