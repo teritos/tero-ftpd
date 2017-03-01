@@ -7,7 +7,7 @@ HOST = os.getenv('TERO_FTP_HOST', '0.0.0.0')
 PORT = os.getenv('TERO_FTP_PORT', 2121)
 PASSIVE_PORTS_MIN = int(os.getenv('PASSIVE_PORTS_MIN'))
 PASSIVE_PORTS_MAX = int(os.getenv('PASSIVE_PORTS_MAX'))
-ROOTDIR = os.getenv('TERO_FTP_FILES_DIR') or str(pathlib.Path.home() / pathlib.Path('.config/tero'))
+ROOTDIR = os.getenv('TERO_FTP_ROOTDIR') or str(pathlib.Path.home() / pathlib.Path('.config/tero'))
 
 SECRET_KEY = os.getenv('DJANGO_SECRET') or 'secret'
 DATABASES = {

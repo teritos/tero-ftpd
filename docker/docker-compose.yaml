@@ -1,0 +1,17 @@
+version: '2'
+services:
+  tero-ftpd:
+    build: ./tero-ftpd
+    command: start-ftpd 
+    entrypoint: /entrypoint.sh
+    tty: true
+    stdin_open: true 
+    ports:
+      - "20781:2121"
+    volumes:
+      - ./tero-ftpd/entrypoint.sh:/entrypoint.sh
+      - ..:/tero-ftpd
+      - ../uploads:/uploads
+    links:
+      - pgsql:pgsql
+      - redis:redis
