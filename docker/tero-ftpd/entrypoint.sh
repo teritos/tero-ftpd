@@ -22,11 +22,12 @@ then
   echo "-- Instalando requerimientos con $PIP --"
   echo "-- Installing: requirements.txt --"
   $PIP install --upgrade pip
-  if [ "$INSTALL_REQUIREMENTS" = "1"]
+  if [ "$INSTALL_REQUIREMENTS" = "1" ]
   then
     $PIP install -r requirements.txt
     echo "-- Installing: requirements.txt done --"
   fi
+  $PYTHON setup.py develop
 fi
 
 case "$1" in
