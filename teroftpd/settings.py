@@ -21,7 +21,7 @@ DATABASES = {
     }
 }
 REDIS_HOST = os.getenv('TERO_REDIS_HOST')
-REDIS_PORT = int(os.getenv('TERO_REDIS_PORT'))
+REDIS_PORT = 6379
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "asgi_redis.RedisChannelLayer",
