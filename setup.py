@@ -21,13 +21,6 @@ def get_version():
     return m.groups()[0].replace(', ', '.')
 
 
-REQUIREMENTS = {
-    'pyftpdlib':'pyftpdlib',
-    'libtero':'libtero',
-    'channels':'channels',
-}
-
-
 setup(
     name='teroftpd',
     version='0.1.0',
@@ -42,12 +35,10 @@ setup(
     package_dir={'libtero':
                  'libtero'},
     include_package_data=True,
-    install_requires=REQUIREMENTS,
     license="GNU General Public License v3",
     zip_safe=False,
     keywords='teroftpd',
     install_required=['setuptools'],
-    extras_require=REQUIREMENTS,
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
