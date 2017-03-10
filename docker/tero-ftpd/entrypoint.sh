@@ -27,7 +27,7 @@ then
     $PIP install -r requirements.txt
     echo "-- Installing: requirements.txt done --"
   fi
-  $PYTHON setup.py develop
+  $PYTHON setup.py install 
 fi
 
 case "$1" in
