@@ -1,8 +1,8 @@
 version: '2'
-user: ${USER}
-container_name: tero_ftpd
 services:
   tero-ftpd:
+    user: ${USER}
+    container_name: tero_ftpd
     environment:
       - TERO_FTP_HOST=${TERO_FTP_HOST}
       - TERO_FTP_PORT=${TERO_FTP_PORT}
