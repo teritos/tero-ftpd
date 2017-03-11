@@ -1,4 +1,5 @@
 version: '2'
+user: ${USER}
 container_name: tero_ftpd
 services:
   tero-ftpd:
