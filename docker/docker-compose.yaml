@@ -8,8 +8,7 @@ services:
     stdin_open: true 
     ports:
       - "20781:2121"
-      - "30000-30000:30099-30099"
+      - "0.0.0.0:30000-30099:30000-30099"
     volumes:
       - ./tero-ftpd/entrypoint.sh:/entrypoint.sh
       - ..:/tero-ftpd
-      - ../uploads:/uploads
