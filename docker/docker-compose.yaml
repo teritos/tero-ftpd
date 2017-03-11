@@ -12,3 +12,4 @@ services:
     volumes:
       - ./tero-ftpd/entrypoint.sh:/entrypoint.sh
       - ..:/tero-ftpd
+      - ./uploads:/uploads

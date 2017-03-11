@@ -20,7 +20,3 @@ services:
       - PGSQL_HOST=${PGSQL_HOST}
       - TERO_REDIS_HOST=${TERO_REDIS_HOST}
       - FTPD_MASQUERADE_ADDRESS=${FTPD_MASQERADE_ADDRESS}
-    volumes:
-      - ./tero-ftpd/entrypoint.sh:/entrypoint.sh
-      - ..:/tero-ftpd
-      - ${TERO_FTP_ROOTDIR}:/uploads
