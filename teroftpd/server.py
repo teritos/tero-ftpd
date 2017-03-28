@@ -7,6 +7,7 @@ from pyftpdlib.servers import ThreadedFTPServer
 from teroftpd.handlers import DjangoChannelsFTPHandler
 from teroftpd.authorizer import FTPDjangoUserAuthorizer
 from teroftpd._version import BANNER
+from teroftpd import settings
 
 
 logger = logging.getLogger("ftpd")  # pylint: disable=C0103
@@ -33,13 +34,14 @@ class TeroFTPServer(object):
 
     def create_root_dir(self, rootdir):
         """Create directory to place FTPD files."""
-        os.makedirs(rootdir, exist_ok=True)
+        os.makedirs(rootdir, exist_ok=True)  # pylint: disable=unexpected-keyword-arg,E1123
 
     def run(self):
         """Start FTP server"""
         address, port = self.ftp_server.address
         logger.info(BANNER)
         logger.info("Starting FTP server on: %s:%s", address, port)
+        logger.info("Someone told me to connect to redis on %s:%s", settings.REDIS_HOST, settings.REDIS_PORT)
         try:
             self.ftp_server.serve_forever()
         finally:

@@ -13,14 +13,14 @@ SECRET_KEY = os.getenv('DJANGO_SECRET') or 'secret'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('TERO_PGSQL_NAME'),
-        'USER': os.getenv('TERO_PGSQL_USER'),
-        'HOST': os.getenv('TERO_PGSQL_HOST'),
-        'PORT': os.getenv('TERO_PGSQL_PORT'),
-        'PASSWORD': os.getenv('TERO_PGSQL_PASSWORD'),
+        'NAME': os.getenv('PGSQL_NAME'),
+        'USER': os.getenv('PGSQL_USER'),
+        'HOST': os.getenv('PGSQL_HOST'),
+        'PORT': os.getenv('PGSQL_PORT'),
+        'PASSWORD': os.getenv('PGSQL_PASSWORD'),
     }
 }
-REDIS_HOST = os.getenv('TERO_REDIS_HOST')
+REDIS_HOST = os.getenv('REDIS_HOST')
 REDIS_PORT = 6379
 CHANNEL_LAYERS = {
     "default": {
