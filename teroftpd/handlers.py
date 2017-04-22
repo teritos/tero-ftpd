@@ -3,6 +3,7 @@
 import os
 import base64
 import logging
+import logging.handlers
 from pathlib import PurePosixPath
 from pyftpdlib.handlers import FTPHandler
 from teroftpd.asgi import channel_layer
@@ -10,7 +11,17 @@ from teroftpd.images import ImageHandler
 from teroftpd import settings
 
 
-logger = logging.getLogger("ftpd")  # pylint: disable=C0103
+LOG_FILENAME = '/tmp/pyftpd.log'
+
+# Set up a specific logger with our desired output level
+logger = logging.getLogger('ftpd')
+logger.setLevel(logging.DEBUG)
+
+# Add the log message handler to the logger
+handler = logging.handlers.RotatingFileHandler(
+              LOG_FILENAME, maxBytes=20, backupCount=5)
+
+logger.addHandler(handler)
 
 
 class DjangoChannelsFTPHandler(FTPHandler):
@@ -53,8 +64,8 @@ class DjangoChannelsFTPHandler(FTPHandler):
         """Send a notification."""
         image = ImageHandler(filepath=filepath, username=self.username)
 
-        #if image.is_similar():
-        #    return
+        if image.is_similar():
+            return
 
         with open(filepath, 'rb') as image:
             encoded_image = base64.b64encode(image.read())
