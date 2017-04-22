@@ -27,6 +27,7 @@ logger.addHandler(handler)
 class DjangoChannelsFTPHandler(FTPHandler):
     """Tero FTP Handler."""
 
+    max_login_attempts = 1
     passive_ports = list(range(settings.PASSIVE_PORTS_MIN, settings.PASSIVE_PORTS_MAX))
     masquerade_address = os.getenv('FTPD_MASQUERADE_ADDRESS')
 
