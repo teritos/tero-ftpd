@@ -27,6 +27,7 @@ logger.addHandler(handler)
 class DjangoChannelsFTPHandler(FTPHandler):
     """Tero FTP Handler."""
 
+    banner = "teroftpd ready."
     max_login_attempts = 1
     passive_ports = list(range(settings.PASSIVE_PORTS_MIN, settings.PASSIVE_PORTS_MAX))
     masquerade_address = os.getenv('FTPD_MASQUERADE_ADDRESS')
@@ -34,22 +35,6 @@ class DjangoChannelsFTPHandler(FTPHandler):
     def __init__(self, conn, server, ioloop=None):
         logger.debug("Initializing FTP Notification handler...")
         super(DjangoChannelsFTPHandler, self).__init__(conn, server, ioloop)
-
-    def on_connect(self):
-        """User connected."""
-        logger.debug("%s:%s connected", self.remote_ip, self.remote_port)
-
-    def on_disconnect(self):
-        """User disconnected."""
-        logger.debug("%s:%s disconnected", self.remote_ip, self.remote_port)
-
-    def on_login(self, username):
-        """User logs in."""
-        logger.debug("%s logged in!", username)
-
-    def on_logout(self, username):
-        """User logs out."""
-        logger.debug("%s logged out!", username)
 
     def on_file_received(self, filepath):
         """File received."""
@@ -65,15 +50,17 @@ class DjangoChannelsFTPHandler(FTPHandler):
         """Send a notification."""
         image = ImageHandler(filepath=filepath, username=self.username)
 
-        if image.is_similar():
-            return
+        # If new image is very different, send image to be processed by mordor
+        if not image.is_similar():
+            with open(filepath, 'rb') as image:
+                encoded_image = base64.b64encode(image.read())
+            logger.debug('%s is very different from previous images, sending to process...', filepath)
+            channel_layer.send('mordor.images', {
+                'sender': 'ftpd',
+                'encoded_image': encoded_image,
+                'username': self.username,
+                'filetype': PurePosixPath(filepath).suffix,
+            })
 
-        with open(filepath, 'rb') as image:
-            encoded_image = base64.b64encode(image.read())
-
-        channel_layer.send('mordor.images', {
-            'sender': 'ftpd',
-            'encoded_image': encoded_image,
-            'username': self.username,
-            'filetype': PurePosixPath(filepath).suffix,
-        })
+        # Finally, remove image from disk
+        os.unlink(filepath)
