@@ -12,6 +12,7 @@ from teroftpd import settings
 
 
 LOG_FILENAME = '/tmp/pyftpd.log'
+VISION_CONSUMER_KEY = 'vision.images'
 
 # Set up a specific logger with our desired output level
 logger = logging.getLogger('ftpd')
@@ -55,7 +56,7 @@ class DjangoChannelsFTPHandler(FTPHandler):
             with open(filepath, 'rb') as image:
                 encoded_image = base64.b64encode(image.read())
             logger.debug('%s is very different from previous images, sending to process...', filepath)
-            channel_layer.send('mordor.images', {
+            channel_layer.send(VISION_CONSUMER_KEY, {
                 'sender': 'ftpd',
                 'encoded_image': encoded_image,
                 'username': self.username,
