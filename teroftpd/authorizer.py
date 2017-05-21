@@ -2,6 +2,7 @@
 import os
 import logging
 
+from teroftpd import settings
 from pyftpdlib.authorizers import DummyAuthorizer
 from pyftpdlib.authorizers import AuthenticationFailed
 
@@ -29,7 +30,7 @@ class FTPDjangoUserAuthorizer(DummyAuthorizer):
             logger.info('User %s alarm is deactivated, ignoring session', username)
             raise AuthenticationFailed()
 
-        root_homedir = username
+        root_homedir = os.path.join(settings.ROOTDIR, username)
         perm = 'elawdm'
         os.makedirs(root_homedir, exist_ok=True)
         if not self.has_user(username):
