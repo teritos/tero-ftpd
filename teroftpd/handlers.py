@@ -11,7 +11,7 @@ from teroftpd.images import ImageHandler
 from teroftpd import settings
 
 
-LOG_FILENAME = '/logs/pyftpd.log'
+LOG_FILENAME = '/logs/ftpd.log'
 VISION_CONSUMER_KEY = 'vision.images'
 
 # Set up a specific logger with our desired output level
