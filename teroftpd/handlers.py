@@ -23,6 +23,7 @@ handler = logging.handlers.RotatingFileHandler(
               LOG_FILENAME, maxBytes=20, backupCount=5)
 
 logger.addHandler(handler)
+raven = settings.RAVEN_CLIENT
 
 
 class DjangoChannelsFTPHandler(FTPHandler):
@@ -40,12 +41,18 @@ class DjangoChannelsFTPHandler(FTPHandler):
     def on_file_received(self, filepath):
         """File received."""
         logger.info("File received %s", filepath)
-        self.handle_file_received(filepath)
+        try:
+            self.handle_file_received(filepath)
+        except:
+            raven.captureException()
 
     def on_incomplete_file_received(self, filepath):
         """Incomplete File received."""
         logger.info("Incomplete file received %s", filepath)
-        self.handle_file_received(filepath)
+        try:
+            self.handle_file_received(filepath)
+        except:
+            raven.captureException()
 
     def handle_file_received(self, filepath):
         """Send a notification."""
