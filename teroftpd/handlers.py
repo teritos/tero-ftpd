@@ -43,16 +43,18 @@ class DjangoChannelsFTPHandler(FTPHandler):
         logger.info("File received %s", filepath)
         try:
             self.handle_file_received(filepath)
-        except:
+        except Exception as exc:
             raven.captureException()
+            raise exc
 
     def on_incomplete_file_received(self, filepath):
         """Incomplete File received."""
         logger.info("Incomplete file received %s", filepath)
         try:
             self.handle_file_received(filepath)
-        except:
+        except Exception as exc:
             raven.captureException()
+            raise exc
 
     def handle_file_received(self, filepath):
         """Send a notification."""
