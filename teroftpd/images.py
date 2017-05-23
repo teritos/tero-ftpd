@@ -26,20 +26,18 @@ class ImageHandler(object):
     def is_similar(self):
         """Return bool if images are similar."""
         image_hash = ImageHash(filepath=self.filepath)
-        key = 'motion.{}'.format(self.username)
+        key = 'vision.{}'.format(self.username)
+        ttl = r.ttl(key)
 
-        # first image
-        if not r.exists(key):
+        # key doenst exists
+        if ttl == -2:
             r.set(key, str(image_hash), MOTION_TTL)
-
-        # inside MOTION_TTL
+        # Key returns -1 if key exists but has not associated expire
+        elif ttl == -1:
+            r.set(key, str(image_hash), MOTION_TTL)
         else:
             last_value = r.get(key).decode('ascii')
             last_hash = ImageHash.from_string(last_value)
-
-            ttl = r.ttl(key)
-            r.set(key, str(image_hash), ttl)
-
             score = image_hash.compare(last_hash)
             logger.info("%s / SIMILARITY_THRESHOLD: %s", score, SIMILARITY_THRESHOLD)
 
