@@ -26,7 +26,7 @@ class ImageHandler(object):
     def is_similar(self):
         """Return bool if images are similar."""
         image_hash = ImageHash(filepath=self.filepath)
-        key = 'vision.{}'.format(self.username)
+        key = 'motion.{}'.format(self.username)
         ttl = r.ttl(key)
 
         # key doenst exists
