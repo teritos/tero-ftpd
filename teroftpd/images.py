@@ -31,15 +31,19 @@ class ImageHandler(object):
 
         # key doenst exists
         if ttl == -2:
+            logger.debug('Key %s does not exists, creating it', key)
             r.set(key, str(image_hash), MOTION_TTL)
+            logger.debug('%s will expire in %s', key, MOTION_TTL)
         # Key returns -1 if key exists but has not associated expire
         elif ttl == -1:
+            logger.debug('Key %s exists but doesnt have an associated expire time.', key)
             r.set(key, str(image_hash), MOTION_TTL)
+            logger.debug('%s will expire in %s', key, MOTION_TTL)
         else:
             last_value = r.get(key).decode('ascii')
             last_hash = ImageHash.from_string(last_value)
             score = image_hash.compare(last_hash)
-            logger.info("%s / SIMILARITY_THRESHOLD: %s", score, SIMILARITY_THRESHOLD)
+            logger.debug("%s / SIMILARITY_THRESHOLD: %s", score, SIMILARITY_THRESHOLD)
 
             if score > SIMILARITY_THRESHOLD:
                 return True
