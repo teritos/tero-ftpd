@@ -45,7 +45,7 @@ class DjangoChannelsFTPHandler(FTPHandler):
             self.handle_file_received(filepath)
         except Exception as exc:
             raven.captureException()
-            raise exc
+            logger.exception("On File Received")
 
     def on_incomplete_file_received(self, filepath):
         """Incomplete File received."""
@@ -54,23 +54,25 @@ class DjangoChannelsFTPHandler(FTPHandler):
             self.handle_file_received(filepath)
         except Exception as exc:
             raven.captureException()
-            raise exc
+            logger.exception("On Incomplete File Received")
 
     def handle_file_received(self, filepath):
         """Send a notification."""
-        image = ImageHandler(filepath=filepath, username=self.username)
+        try:
+            image = ImageHandler(filepath=filepath, username=self.username)
 
-        # If new image is very different, send image to be processed by mordor
-        if not image.is_similar():
-            with open(filepath, 'rb') as image:
-                encoded_image = base64.b64encode(image.read())
-            logger.debug('%s is very different from previous images, sending to process...', filepath)
-            channel_layer.send(VISION_CONSUMER_KEY, {
-                'sender': 'ftpd',
-                'encoded_image': encoded_image,
-                'username': self.username,
-                'filetype': PurePosixPath(filepath).suffix,
-            })
+            # If new image is very different, send image to be processed by mordor
+            if not image.is_similar():
+                with open(filepath, 'rb') as image:
+                    encoded_image = base64.b64encode(image.read())
+                logger.debug('%s is very different from previous images, sending to process...', filepath)
+                channel_layer.send(VISION_CONSUMER_KEY, {
+                    'sender': 'ftpd',
+                    'encoded_image': encoded_image,
+                    'username': self.username,
+                    'filetype': PurePosixPath(filepath).suffix,
+                })
 
         # Finally, remove image from disk
-        os.unlink(filepath)
+        finally:
+            os.unlink(filepath)
