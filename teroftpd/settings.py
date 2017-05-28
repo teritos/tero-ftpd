@@ -19,7 +19,7 @@ DATABASES = {
         'USER': os.getenv('PGSQL_USER'),
         'HOST': os.getenv('PGSQL_HOST'),
         'PORT': os.getenv('PGSQL_PORT'),
-        'PASSWORD': os.getenv('PGSQL_PASSWORD'),
+        'PASSWORD': os.getenv('PGSQL_SECRET'),
     }
 }
 REDIS_HOST = os.getenv('REDIS_HOST')
