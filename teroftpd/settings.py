@@ -2,7 +2,6 @@
 
 import os
 import raven
-import pathlib
 
 HOST = os.getenv('TERO_FTP_HOST', '0.0.0.0')
 PORT = os.getenv('TERO_FTP_PORT', 2121)
@@ -12,6 +11,12 @@ ROOTDIR = os.getenv('TERO_FTP_ROOTDIR') or '/ftp-users'
 RAVEN_CLIENT = raven.Client(os.getenv('SENTRY_DNS'))
 
 SECRET_KEY = os.getenv('DJANGO_SECRET') or 'secret'
+INSTALLED_APPS = [
+    'django.contrib.auth',
+    'channels',
+]
+LANGUAGE_CODE = 'es-AR'
+TIME_ZONE = 'America/Argentina/Buenos_Aires'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -32,4 +37,40 @@ CHANNEL_LAYERS = {
         },
         "ROUTING": "teroftpd.routing.channel_routing",
     },
+}
+LOGDIR = '/logs'
+os.makedirs(LOGDIR, exist_ok=True)
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '%(levelname)s %(asctime)s %(message)s',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'ERROR',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'file': {
+            'level': 'ERROR',
+            'class' : 'logging.handlers.RotatingFileHandler',
+            'maxBytes' : 1024*1024*20, # 10MB
+            'backupCount': 3,
+            'formatter': 'simple',
+            'filename': os.path.join(LOGDIR, 'teroftpd.log'),
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'propagate': True,
+        },
+        'ftpd': {
+            'handlers': ['file'],
+            'propagate': True,
+        },
+    }
 }
