@@ -12,7 +12,12 @@ RAVEN_CLIENT = raven.Client(os.getenv('SENTRY_DNS'))
 
 SECRET_KEY = os.getenv('DJANGO_SECRET') or 'secret'
 INSTALLED_APPS = [
+    'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
     'channels',
 ]
 LANGUAGE_CODE = 'es-AR'
