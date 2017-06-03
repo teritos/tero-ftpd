@@ -1,5 +1,4 @@
 pyftpdlib
-django
 channels
 asgi_redis
 https://github.com/teritos/tero-lib/archive/master.zip
