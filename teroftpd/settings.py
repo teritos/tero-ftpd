@@ -11,6 +11,7 @@ PASSIVE_PORTS_MAX = int(os.getenv('PASSIVE_PORTS_MAX'))
 ROOTDIR = os.getenv('TERO_FTP_ROOTDIR') or '/ftp-users'
 RAVEN_CLIENT = raven.Client(os.getenv('SENTRY_DNS'))
 SECRET_KEY = os.environ['SECRET_KEY']
+USERS_DB_FILE = os.environ['USERS_DB_FILE']
 
 DATABASES = {
     'default': {
