@@ -25,5 +25,5 @@ class Alarm(object):
         cursor.execute(query)
         try:
             return cursor.fetchone()[0]
-        except IndexError:
+        except (IndexError, TypeError):
             return False

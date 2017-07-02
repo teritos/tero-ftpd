@@ -6,9 +6,9 @@ import sqlite3
 import bcrypt
 from pyftpdlib.authorizers import DummyAuthorizer
 from pyftpdlib.authorizers import AuthenticationFailed
-from db import Alarm
 
 from teroftpd import settings
+from teroftpd.db import Alarm
 
 
 DEFAULT_PERMISSIONS = "elradfmw"
