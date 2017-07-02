@@ -21,6 +21,9 @@ class Alarm(object):
     @classmethod
     def is_active_for(cls, username):
         cursor = conn.cursor()
-        query = 'SELECT alarm_alarm.active FROM alarm_alarm INNER JOIN auth_user ON (alarm_alarm.owner_id = auth_user.id) WHERE auth_user.username = (%s)', (username)
+        query = "SELECT alarm_alarm.active FROM alarm_alarm INNER JOIN auth_user ON (alarm_alarm.owner_id = auth_user.id) WHERE auth_user.username = '%s';" % (username,)
         cursor.execute(query)
-        return cursor.fetchone()
+        try:
+            return cursor.fetchone()[0]
+        except IndexError:
+            return False

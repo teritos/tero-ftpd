@@ -3,9 +3,12 @@ import os
 import logging
 import sqlite3
 
-from teroftpd import settings
+import bcrypt
 from pyftpdlib.authorizers import DummyAuthorizer
 from pyftpdlib.authorizers import AuthenticationFailed
+from db import Alarm
+
+from teroftpd import settings
 
 
 DEFAULT_PERMISSIONS = "elradfmw"
@@ -26,10 +29,9 @@ class FTPDjangoUserAuthorizer(DummyAuthorizer):
     def add_user(self, username, password, homedir, perm='elr',
                  msg_login="Login successful.", msg_quit="Goodbye."):
 
-        # TODO: encrypt password
         sqlt = sqlite3.connect(settings.USERS_DB_FILE)
         sqlt.execute("INSERT INTO users (username, password, homedir, perms, active, msg_login, msg_quit)"
-                     "VALUES (?, ?, ?, ?, ?, ?, ?)", [username, password, homedir, perm, True, msg_login, msg_quit])
+                     "VALUES (?, ?, ?, ?, ?, ?, ?)", [username, bcrypt.hashpw(password, bcrypt.gensalt()), homedir, perm, True, msg_login, msg_quit])
         sqlt.commit()
 
     def remove_user(self, username):
@@ -49,7 +51,7 @@ class FTPDjangoUserAuthorizer(DummyAuthorizer):
         query = sqlt.execute("SELECT homedir FROM users WHERE username=?", [username])
         data = query.fetchone()
         if data is not None:
-            return unicode(data[0])
+            return data[0]
 
     def has_user(self, username):
         """Whether the username exists in the virtual users table."""
@@ -61,9 +63,9 @@ class FTPDjangoUserAuthorizer(DummyAuthorizer):
 
     def _check_password(self, username, password):
         sqlt = sqlite3.connect(settings.USERS_DB_FILE)
-        query = sqlt.execute("SELECT count(*) FROM users WHERE username=? AND password=?", [username, password])
+        query = sqlt.execute("SELECT password FROM users WHERE username=?", [username])
         data = query.fetchone()
-        return bool(data[0])
+        return bcrypt.checkpw(password, data[0])
 
     def get_perms(self, username):
         # No check permissions
@@ -80,13 +82,11 @@ class FTPDjangoUserAuthorizer(DummyAuthorizer):
         perm = 'elawdm'
 
         # Check if alarms is activated
-        alarm_info = get_alarm_info_from(username)
-        alarm = alarm_info.get('alarm')
-        alarm_status = alarm.get('status')
+        alarm_active = get_alarm_info_from(username)
 
 
         # If alarm is not activated refuse authentication
-        if alarm_status != 'active':
+        if alarm_active is False:
             logger.info('User %s alarm is deactivated, ignoring session', username)
             raise AuthenticationFailed()
 
@@ -134,5 +134,4 @@ class FTPDjangoUserAuthorizer(DummyAuthorizer):
 
 def get_alarm_info_from(username):
     """Authenticate a user."""
-    response = {'alarm': {'status': 'active'}}
-    return response
+    return Alarm.is_active_for(username)
